@@ -4,11 +4,15 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:html_unescape/html_unescape.dart';
+
 import 'package:quizCards/screens/home.dart';
+import 'package:quizCards/screens/quizCard.dart';
+import 'package:quizCards/widgets/helpers.dart';
 
 Future<List<QuizData>> fetchQuizData(int id, int amount, String difficulty) async {
   final response = await http.get('https://opentdb.com/api.php?amount=$amount&category=$id&difficulty=$difficulty');
-
+  
   if (response.statusCode == 200 ) {
     Map<String, dynamic> map= jsonDecode(response.body);
     List<dynamic> body = map['results'];
@@ -25,19 +29,16 @@ class QuizData {
   final String difficulty;
   final String question;
   final String correctAnswer;
-  final List possibleAnswers;
+  final List incorrectAnswers;
 
-  QuizData({this.difficulty, this.question, this.correctAnswer, this.possibleAnswers});
-
+  QuizData({this.difficulty, this.question, this.correctAnswer, this.incorrectAnswers});
+  
   factory QuizData.fromJson(Map<String, dynamic> json) {
-    List possibleAnswers = json['incorrect_answers'];
-    possibleAnswers.add(json['answer']);
-    possibleAnswers.shuffle();
     return QuizData(
       question: json['question'],
       correctAnswer: json['correct_answer'],
       difficulty: json['difficulty'],
-      possibleAnswers: possibleAnswers
+      incorrectAnswers: json['incorrect_answers']
     );
   }
 }
@@ -72,26 +73,27 @@ class _QuizCards extends State<QuizCards> {
             future: fetchQuizData(widget.catId, widget.amount, widget.difficulty),
             builder: (BuildContext context, AsyncSnapshot<List<QuizData>> snapshot) {
               if (snapshot.hasData) {
+                var htmlFix = HtmlUnescape();
                 List<QuizData> cards = snapshot.data;
+                List<String> possibleAnswers;
                 for( var item in cards) {
-                  var front;
-                  var back;
-                  quizcards.add(Container(
-                    width: 200,
-                      child: Column(
-                        
-                        children: <Widget>[
-                          Text(item.question),
-                          Container(
-                            child: Column(
-                              children: <Widget>[])
-                          )
-                        ]
-                      )
-                  ));
+                  possibleAnswers = List<String>.from(item.incorrectAnswers);
+                  possibleAnswers.insert(1,item.correctAnswer);
+                  possibleAnswers.map((x) => x = htmlFix.convert(x));
+                  possibleAnswers.shuffle();
+
+                  quizcards.add(QuizCard(
+                      question: htmlFix.convert(item.question),
+                      answer: htmlFix.convert(item.correctAnswer),
+                      difficulty: item.difficulty,
+                      possibleAnswers: possibleAnswers,      
+                    )
+                  );
+                  quizcards.add(SizedBox(height:20));
                 }
                 return Column(
-                  children: quizcards
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: quizcards
                 );
               } else if(snapshot.hasError) {
                 throw snapshot.error;
