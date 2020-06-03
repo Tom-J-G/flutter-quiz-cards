@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:quizCards/widgets/flippable.dart';
+import 'package:html_unescape/html_unescape.dart';
 
 class QuizCard extends StatefulWidget {
   final String question;
@@ -27,6 +28,7 @@ class _QuizCard extends State<QuizCard> {
 
   @override
   Widget build(BuildContext context) {
+    var htmlFix = HtmlUnescape();
     Container front = Container(
       margin: const EdgeInsets.all(20),
       width: 250,
@@ -39,7 +41,7 @@ class _QuizCard extends State<QuizCard> {
           SizedBox(height:20),
           Column(
             children: widget.possibleAnswers.map(
-              (x) => Text(x , style: TextStyle(color: Colors.black45), textAlign: TextAlign.center,)
+              (x) => Text(htmlFix.convert(x).replaceAll('&#039;', "'"), style: TextStyle(color: Colors.black45), textAlign: TextAlign.center,)
             ).toList(),
           )
         ]
