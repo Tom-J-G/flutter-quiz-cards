@@ -41,7 +41,7 @@ class _QuizCard extends State<QuizCard> {
           SizedBox(height:20),
           Column(
             children: widget.possibleAnswers.map(
-              (x) => Text(htmlFix.convert(x).replaceAll('&#039;', "'"), style: TextStyle(color: Colors.black45), textAlign: TextAlign.center,)
+              (x) => Text(htmlFix.convert(x).replaceAll('&#039;', "'"), style: TextStyle(color: Colors.black45, fontSize: 15), textAlign: TextAlign.center,)
             ).toList(),
           )
         ]
