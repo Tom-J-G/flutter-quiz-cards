@@ -181,8 +181,9 @@ class _HomeState extends State<Home> {
           )
         )
           )
-
-        }
+        },
+        child: Text('Go', style: TextStyle(color: Colors.white54),),
+        tooltip: 'Submit',
       ),
 
     );
