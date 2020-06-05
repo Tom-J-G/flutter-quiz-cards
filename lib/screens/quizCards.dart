@@ -1,47 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'dart:async';
-import 'dart:convert';
 
-import 'package:http/http.dart' as http;
 import 'package:html_unescape/html_unescape.dart';
 
-import 'package:quizCards/screens/home.dart';
 import 'package:quizCards/screens/quizCard.dart';
-import 'package:quizCards/widgets/helpers.dart';
-
-Future<List<QuizData>> fetchQuizData(int id, int amount, String difficulty) async {
-  final response = await http.get('https://opentdb.com/api.php?amount=$amount&category=$id&difficulty=$difficulty');
-  
-  if (response.statusCode == 200 ) {
-    Map<String, dynamic> map= jsonDecode(response.body);
-    List<dynamic> body = map['results'];
-    List<QuizData> cards = body.map(
-      (dynamic item) => QuizData.fromJson(item),
-    ).toList();
-    return cards;
-  } else {
-    throw Exception('Failed to fetch categories');
-  }
-}
-
-class QuizData {
-  final String difficulty;
-  final String question;
-  final String correctAnswer;
-  final List incorrectAnswers;
-
-  QuizData({this.difficulty, this.question, this.correctAnswer, this.incorrectAnswers});
-  
-  factory QuizData.fromJson(Map<String, dynamic> json) {
-    return QuizData(
-      question: json['question'],
-      correctAnswer: json['correct_answer'],
-      difficulty: json['difficulty'],
-      incorrectAnswers: json['incorrect_answers']
-    );
-  }
-}
+import 'package:quizCards/api/triviaApi.dart';
 
 class QuizCards extends StatefulWidget {
   QuizCards({Key key, this.title, this.catId, this.amount, this.difficulty}) : super(key: key);
