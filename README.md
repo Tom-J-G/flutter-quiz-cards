@@ -1,6 +1,9 @@
 # quizCards
 
-A new Flutter project.
+Quiz cards that flip when clicked built in flutter
+
+<img width="320" alt="Screenshot 2020-08-14 at 14 43 30" src="https://user-images.githubusercontent.com/64728911/90256268-66f62480-de3d-11ea-94e4-aabad434ec65.png">
+
 
 ## Getting Started
 
