@@ -26,7 +26,7 @@ class App extends StatelessWidget {
           
         ).apply(bodyColor: Colors.white60, displayColor: Colors.white60)
       ),
-      home: Home(title: 'Information About You'),
+      home: Home(title: 'Quiz App'),
     );
   }
 }
